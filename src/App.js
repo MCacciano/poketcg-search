@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import pokeTcg from './axios/pokeTcg';
 import CardList from './components/CardList';
-import TypesList from './components/TypesList';
 import SearchForm from './components/SearchForm';
 
 const App = () => {
@@ -16,7 +15,8 @@ const App = () => {
     try {
       const getPokemonTypes = async () => {
         const { data } = await pokeTcg.get(`/types`);
-        setPokemonTypes(data.types);
+        const pokeTypes = data.types.map(type => ({ name: type, active: false }));
+        setPokemonTypes(pokeTypes);
       };
 
       getPokemonTypes();
@@ -65,16 +65,16 @@ const App = () => {
   };
 
   return (
-    <div className='h-screen flex flex-col'>
-      <div className='flex justify-center bg-red-700'>
-        <h1 className='text-3xl text-white py-2'>Pokemon TCG Search</h1>
+    <div className="h-screen flex flex-col">
+      <div className="flex justify-center bg-red-700">
+        <h1 className="text-3xl text-white py-2">Pokemon TCG Search</h1>
       </div>
-      <div className='flex flex-col h-full gap-12'>
+      <div className="flex flex-col h-full gap-12">
         <SearchForm
           pokemonTypes={pokemonTypes}
-          onInputChange={e => setSearchTerm(e.target.value)}
+          onSearchChange={e => setSearchTerm(e.target.value)}
           onSubmit={handleSubmit}
-          handleTypeChange={handleTypeChange}
+          onTypeChange={handleTypeChange}
         />
         <CardList cards={cards} />
       </div>
