@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 import CardList from './components/CardList';
 import SearchForm from './components/SearchForm';
