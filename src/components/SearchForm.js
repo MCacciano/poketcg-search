@@ -19,6 +19,7 @@ const SearchForm = ({ setCards }) => {
         }&name=${searchTerm}`
       );
       setCards(data.cards);
+      setSearchTerm('');
     } catch (err) {
       console.error(err);
     }
@@ -46,13 +47,14 @@ const SearchForm = ({ setCards }) => {
     } catch (err) {
       console.error(err);
     }
-  }, []);
+  }, [setCards]);
 
   return (
     <form className="flex flex-col items-center my-5" onSubmit={handleSubmit}>
       <div>
         <input
           className="border border-gray-5 rounded shadow h-full flex-grow p-1"
+          value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
         <button className="bg-blue-700 text-white border rounded shadow px-2 ml-2 h-full">
