@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
+import PokeTypes from './PokeTypes';
 
 const SearchForm = ({ setCards }) => {
   const [searchTypes, setSearchTypes] = useState([]);
-  const [pokemonTypes, setPokemonTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSubmit = async e => {
@@ -33,53 +34,38 @@ const SearchForm = ({ setCards }) => {
     }
   };
 
+  // get intial 50 cards for something to show on page load
   useEffect(() => {
     try {
-      const getPokemonTypes = async () => {
-        const { data } = await axios.get(`https://api.pokemontcg.io/v1/types`);
-        const pokeTypes = data.types.map(type => ({
-          name: type,
-          active: false,
-        }));
-        setPokemonTypes(pokeTypes);
+      const getInitialCards = async () => {
+        const { data } = await axios.get(`https://api.pokemontcg.io/v1/cards?pageSize=50`);
+        setCards(data.cards);
       };
 
-      getPokemonTypes();
+      getInitialCards();
     } catch (err) {
       console.error(err);
     }
   }, []);
 
   return (
-    <form className='flex flex-col items-center my-5' onSubmit={handleSubmit}>
+    <form className="flex flex-col items-center my-5" onSubmit={handleSubmit}>
       <div>
         <input
-          className='border border-gray-5 rounded shadow h-full flex-grow my-1 py-1'
+          className="border border-gray-5 rounded shadow h-full flex-grow p-1"
           onChange={e => setSearchTerm(e.target.value)}
         />
-        <button className='bg-blue-700 text-white border rounded shadow px-2 ml-2 h-full'>
+        <button className="bg-blue-700 text-white border rounded shadow px-2 ml-2 h-full">
           Search
         </button>
       </div>
-      <div className='w-full flex flex-wrap justify-between my-5 px-5'>
-        {pokemonTypes.map(type => (
-          <label
-            key={type.name}
-            className={`flex items-center border rounded py-1 px-2 cursor-pointer text-${type.name.toLowerCase()} border-${type.name.toLowerCase()}`}
-          >
-            <span>{type.name}</span>
-            <input
-              className='ml-2'
-              type='checkbox'
-              name='pokemonType'
-              value={type.name}
-              onChange={handleTypeChange}
-            />
-          </label>
-        ))}
-      </div>
+      <PokeTypes onInputChange={handleTypeChange} />
     </form>
   );
+};
+
+SearchForm.propTypes = {
+  setCards: PropTypes.func
 };
 
 export default SearchForm;
